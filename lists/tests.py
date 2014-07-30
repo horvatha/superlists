@@ -2,7 +2,23 @@ from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.template.loader import render_to_string
 from django.http import HttpRequest
+
 from lists.views import home_page
+from lists.models import Item
+
+
+class ItemModelTest(TestCase):
+    def test_saving_and_retrieving_items(self):
+        texts = ('The first (ever) list item', 'Item the second')
+        for item_text in texts:
+            item = Item(text=item_text)
+            item.save()
+
+        items = Item.objects.all()
+        self.assertEqual(items.count(), 2)
+
+        for i in range(2):
+            self.assertEqual(items[i].text, texts[i])
 
 
 class HomePageTest(TestCase):
