@@ -32,26 +32,24 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys('Repair the bicycle')
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(
-            '1: Repair the bicycle',
-            [row.text for row in rows]
-        )
+        self.check_for_row_in_list_table('1: Repair the bicycle')
 
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(inputbox.get_attribute('placeholder'),
                          'Enter a to-do item')
         time.sleep(1)
         inputbox.send_keys('Take a bicycle tour')
+        time.sleep(1)
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
+        for row_text in ('1: Repair the bicycle', '2: Take a bicycle tour'):
+            self.check_for_row_in_list_table(row_text)
+        self.fail("Finish the test!")
+
+    def check_for_row_in_list_table(self, row_text):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        row_texts = [row.text for row in rows]
-        for item in ('1: Repair the bicycle', '2: Take a bicycle tour'):
-            self.assertIn(item, row_texts)
-        self.fail("Finish the test!")
+        self.assertIn(row_text, [row.text for row in rows])
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")
