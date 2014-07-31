@@ -4,3 +4,4 @@ __pycache__
 .*.swp
 .*.swo
 *.sqlite3
+Session.vim
