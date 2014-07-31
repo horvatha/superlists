@@ -11,6 +11,10 @@ from django.test import LiveServerTestCase
 import time
 
 
+def sleep_a_bit():
+    time.sleep(1)
+
+
 class NewVisitorTest(LiveServerTestCase):
     """TestGroup"""
 
@@ -29,10 +33,10 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(inputbox.get_attribute('placeholder'),
                          'Enter a to-do item')
-        time.sleep(1)
+        sleep_a_bit()
         inputbox.send_keys('Repair the bicycle')
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        sleep_a_bit()
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Repair the bicycle')
@@ -40,11 +44,11 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(inputbox.get_attribute('placeholder'),
                          'Enter a to-do item')
-        time.sleep(1)
+        sleep_a_bit()
         inputbox.send_keys('Take a bicycle tour')
-        time.sleep(1)
+        sleep_a_bit()
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        sleep_a_bit()
         for row_text in ('1: Repair the bicycle', '2: Take a bicycle tour'):
             self.check_for_row_in_list_table(row_text)
 
@@ -68,6 +72,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
+        sleep_a_bit()
         self.check_for_row_in_list_table('1: Buy milk')
         self.assertNotEqual(francis_list_url, edith_list_url)
 
