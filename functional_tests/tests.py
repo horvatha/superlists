@@ -73,8 +73,8 @@ class NewVisitorTest(LiveServerTestCase):
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
         sleep_a_bit()
-        self.check_for_row_in_list_table('1: Buy milk')
         self.assertNotEqual(francis_list_url, edith_list_url)
+        self.check_for_row_in_list_table('1: Buy milk')
 
         # Again there is no trace of Edith's list
         page_text = self.browser.find_element_by_tag_name('body').text
