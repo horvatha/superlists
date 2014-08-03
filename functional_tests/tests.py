@@ -12,7 +12,7 @@ import time
 
 
 def sleep_a_bit():
-    time.sleep(1)
+    time.sleep(0)
 
 
 class NewVisitorTest(LiveServerTestCase):
@@ -80,8 +80,6 @@ class NewVisitorTest(LiveServerTestCase):
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Repair the bicycle', page_text)
         self.assertIn('Buy milk', page_text)
-
-        self.fail("Finish the test!")
 
     def check_for_row_in_list_table(self, row_text):
         table = self.browser.find_element_by_id('id_list_table')
