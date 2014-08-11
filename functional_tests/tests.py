@@ -86,5 +86,30 @@ class NewVisitorTest(LiveServerTestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
+    def test_layout_and_styling(self):
+        # Edith goes to the home page
+        self.browser.get(self.live_server_url)
+        width, height = 1024, 768
+        self.browser.set_window_size(width, height)
+
+        # She notices the input box is nicely centered
+        inputbox = self.browser.find_element_by_tag_name('input')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width']/2,
+            width/2,
+            delta=3
+        )
+
+        # She starts a new list and see the input box is nicely centered there
+        # too
+        inputbox.send_keys('testing\n')
+        time.sleep(5)
+        inputbox = self.browser.find_element_by_tag_name('input')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width']/2,
+            width/2,
+            delta=3
+        )
+
 if __name__ == "__main__":
     unittest.main(warnings="ignore")
