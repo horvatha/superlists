@@ -9,6 +9,7 @@ from selenium.webdriver.common.keys import Keys
 import unittest
 from django.test import LiveServerTestCase
 import time
+import sys
 
 
 def sleep_a_bit():
@@ -18,6 +19,20 @@ def sleep_a_bit():
 class NewVisitorTest(LiveServerTestCase):
     """TestGroup"""
 
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if "liveserver" in arg:
+                cls.server_url = "http://" + arg.split("=")[1]
+                return
+        LiveServerTestCase.setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            LiveServerTestCase.tearDownClass()
+
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
@@ -26,7 +41,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.quit()
 
     def test_can_start_a_list_and_retrieve_it_later(self):
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do', header_text)
@@ -54,13 +69,13 @@ class NewVisitorTest(LiveServerTestCase):
 
         # A new user Francis comes along the site
         self.browser.quit()
-        ## We use a new browser session to make sure there is no
-        ## trace of Edith's through cokies or etc
+        # We use a new browser session to make sure there is no
+        # trace of Edith's through cokies or etc
         self.browser = webdriver.Firefox()
 
         # Francis visits the home page
         # There is no sign of Edith's list
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Repair the bicycle', page_text)
         self.assertNotIn('bicycle', page_text)
@@ -88,7 +103,7 @@ class NewVisitorTest(LiveServerTestCase):
 
     def test_layout_and_styling(self):
         # Edith goes to the home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         width, height = 1024, 768
         self.browser.set_window_size(width, height)
 
@@ -103,7 +118,6 @@ class NewVisitorTest(LiveServerTestCase):
         # She starts a new list and see the input box is nicely centered there
         # too
         inputbox.send_keys('testing\n')
-        time.sleep(5)
         inputbox = self.browser.find_element_by_tag_name('input')
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width']/2,
